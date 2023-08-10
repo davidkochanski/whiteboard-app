@@ -1,7 +1,32 @@
 canvas {
-    width: 1000px;
+    width: 1200px;
     height: 800px;
     border: 5px solid #333;
     background-color: white;
     border-radius: 25px;
+}
+
+#add-board {
+    width: 1200px;
+    height: 800px;
+    padding: 100px;
+    border-radius: 25px;
+    border: 5px dashed #aaa;
+    background-color: #eee;
+    cursor: pointer;
+    transition: background-color 0.25s ease;
+}
+
+#add-board:hover {
+    background-color: #e6e6e6;
+}
+
+#add-board > i {
+    font-size: 160px;
+    color: #aaa;
+    transition: color 0.25s ease;
+}
+
+#add-board:hover > i {
+    color: #333;
 }

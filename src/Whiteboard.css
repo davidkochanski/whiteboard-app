@@ -50,27 +50,3 @@ main {
     box-shadow: none;
 }
 
-#add-board {
-    width: 1000px;
-    height: 800px;
-    padding: 100px;
-    border-radius: 25px;
-    border: 5px dashed #aaa;
-    background-color: #ddd;
-    cursor: pointer;
-    transition: background-color 0.25s ease;
-}
-
-#add-board:hover {
-    background-color: #ccc;
-}
-
-#add-board > i {
-    font-size: 160px;
-    color: #aaa;
-    transition: color 0.25s ease;
-}
-
-#add-board:hover > i {
-    color: #333;
-}
