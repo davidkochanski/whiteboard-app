@@ -79,7 +79,6 @@ export default function Whiteboard() {
         
         let newScale = currentScale * zoomFactor;
 
-        console.log(boards.style.scale);
         if(newScale <= 0.25) {
             newScale = 0.25;
         }
@@ -107,6 +106,21 @@ export default function Whiteboard() {
         // boardsRef.current.style.scale = newScale;
     }
 
+    function handleRecenter() {
+        boardsRef.current.animate([{left: "50%", top: "50%", scale: 0.5}], {duration: 250, fillMode: "forwards"});
+
+        const rect = boardsRef.current.getBoundingClientRect();
+
+        console.log(rect);
+        const left = (window.innerWidth / 2) - (rect.width / 2)
+        const top = (window.innerHeight / 2) - (rect.height / 2)
+
+        setInitialX(rect.left);
+        setInitialY(rect.top);
+        setCurrentX(rect.left);
+        setCurrentY(rect.top);
+    }
+
     function handleAddBoard() {
         if(whiteboards.length >= MAX_WHITEBOARD_COUNT) return;
         
@@ -124,6 +138,7 @@ export default function Whiteboard() {
 
                 <div className="controls-bar"></div>
 
+                <i onClick={handleRecenter} className="fas fa-arrows-to-circle"></i>
                 <i onClick={handleZoomIn} className="fas fa-magnifying-glass-plus"></i>
                 <i onClick={handleZoomOut} className="fas fa-magnifying-glass-minus"></i>
 
