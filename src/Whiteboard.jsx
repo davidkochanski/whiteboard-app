@@ -33,32 +33,27 @@ export default function Whiteboard() {
         setInitialX(e.clientX);
         setInitialY(e.clientY);
 
-        const boards = document.getElementById("board-wrapper");
-
-        setCurrentX(boards.offsetLeft);
-        setCurrentY(boards.offsetTop);
+        setCurrentX(boardsRef.current.offsetLeft);
+        setCurrentY(boardsRef.current.offsetTop);
 
         e.preventDefault();
 
     }
 
     function handleMouseDrag(e) {
-        if(!isDragging || e.button !== 2) return;
+        if(!isDragging) return;
 
         const deltaX = e.clientX - initialX;
         const deltaY = e.clientY - initialY;
 
-        console.log(deltaX, deltaY);
-
-        const boards = document.getElementById("board-wrapper");
-
-        boards.style.left = `${deltaX + currentX}px`
-        boards.style.top = `${deltaY + currentY}px`
-
-        
+        boardsRef.current.style.left = `${deltaX + currentX}px`
+        boardsRef.current.style.top = `${deltaY + currentY}px`
     }
 
     function handleMouseUp(e) {
+        if(e.button !== 2) return;
+
+
         setDragging(false);
 
         setInitialX(e.clientX);
@@ -71,7 +66,7 @@ export default function Whiteboard() {
 
         const boards = document.getElementById("board-wrapper");
 
-        const zoomSpeed = 0.05;
+        const zoomSpeed = 0.1;
         const zoomFactor = 1 + (e.deltaY > 0 ? -zoomSpeed : zoomSpeed);
         
         const newScale = currentScale * zoomFactor;
@@ -85,22 +80,21 @@ export default function Whiteboard() {
     }
     
     function handleZoomOut(e) {
-
         const newScale = currentScale * (1 - BUTTON_ZOOM_FACTOR) > MIN_ZOOM ? currentScale * (1 - BUTTON_ZOOM_FACTOR) : MIN_ZOOM;
 
         setCurrentScale(newScale);
-
         boardsRef.current.style.scale = newScale;
     }
 
     function handleZoomIn(e) {
-
-
         const newScale = currentScale * (1 + BUTTON_ZOOM_FACTOR) < MAX_ZOOM ? currentScale * (1 + BUTTON_ZOOM_FACTOR) : MAX_ZOOM;
 
         setCurrentScale(newScale);
-
         boardsRef.current.style.scale = newScale;
+    }
+
+    function handleAddBoard() {
+        boardsRef.current.appendChild(<div>lol</div>) // doesnt work.
 
     }
 
@@ -124,8 +118,7 @@ export default function Whiteboard() {
 
             <div id="board-wrapper" ref={boardsRef}>
                 <WhiteboardCanvas/>
-                <WhiteboardCanvas/>
-                <WhiteboardCanvas/>
+                <button onClick={handleAddBoard} id="add-board" className="add-board"><i className="fas fa-plus"></i></button>
             </div>
         </main>
 
