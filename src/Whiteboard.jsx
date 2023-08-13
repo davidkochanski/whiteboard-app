@@ -52,9 +52,11 @@ export default function Whiteboard() {
 
         const deltaX = e.clientX - initialX;
         const deltaY = e.clientY - initialY;
-
+        
         boardsRef.current.style.left = `${deltaX + currentX}px`
         boardsRef.current.style.top = `${deltaY + currentY}px`
+
+        console.log(boardsRef.current.style.left);
     }
 
     function handleMouseUp(e) {
@@ -94,31 +96,24 @@ export default function Whiteboard() {
     
     function handleZoomOut() {
         const newScale = currentScale * (1 - BUTTON_ZOOM_FACTOR) > MIN_ZOOM ? currentScale * (1 - BUTTON_ZOOM_FACTOR) : MIN_ZOOM;
-
         setCurrentScale(newScale);
-        // boardsRef.current.style.scale = newScale;
     }
 
     function handleZoomIn() {
         const newScale = currentScale * (1 + BUTTON_ZOOM_FACTOR) < MAX_ZOOM ? currentScale * (1 + BUTTON_ZOOM_FACTOR) : MAX_ZOOM;
-
         setCurrentScale(newScale);
-        // boardsRef.current.style.scale = newScale;
     }
 
     function handleRecenter() {
-        boardsRef.current.animate([{left: "50%", top: "50%", scale: 0.5}], {duration: 250, fillMode: "forwards"});
+        boardsRef.current.animate([{left: `${boardsRef.current.offsetLeft}px`, top: `${boardsRef.current.offsetTop}px`, scale: currentScale}, {left: "50%", top: "50%", scale: 0.5}], {duration: 250, fill: "forwards"});
 
-        const rect = boardsRef.current.getBoundingClientRect();
+        setCurrentX(boardsRef.current.offsetLeft);
+        setCurrentY(boardsRef.current.offsetTop);
+        setCurrentScale(0.5);
 
-        console.log(rect);
-        const left = (window.innerWidth / 2) - (rect.width / 2)
-        const top = (window.innerHeight / 2) - (rect.height / 2)
+        boardsRef.current.style.left = `${boardsRef.current.offsetLeft}px`
+        boardsRef.current.style.top = `${boardsRef.current.offsetTop}px`
 
-        setInitialX(rect.left);
-        setInitialY(rect.top);
-        setCurrentX(rect.left);
-        setCurrentY(rect.top);
     }
 
     function handleAddBoard() {
@@ -128,7 +123,7 @@ export default function Whiteboard() {
     }
 
     return (
-        <main onWheel={handleZoom} onContextMenu={(e) => {e.preventDefault()}} onMouseDown={handleMouseDown} onMouseMove={handleMouseDrag} onMouseUp={handleMouseUp} onMouseOut={handleMouseUp}>
+        <main onWheel={handleZoom} onContextMenu={(e) => {e.preventDefault()}} onMouseDown={handleMouseDown} onMouseMove={handleMouseDrag} onMouseUp={handleMouseUp}>
             
             <div id="controls">
                 <i className="fas fa-palette"></i>
