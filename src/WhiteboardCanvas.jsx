@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './WhiteboardCanvas.css'
 
-export default function WhiteboardCanvas() {
+export default function WhiteboardCanvas( {handleDelete} ) {
     const [isDrawing, setDrawing] = useState(false);
 
     function handlePenDown() {
@@ -18,8 +18,9 @@ export default function WhiteboardCanvas() {
 
 
     return (
-        <>
-            <canvas id="canvas"></canvas>
-        </>
+        <div className="canvas-wrapper">
+            <canvas className="canvas" id="canvas"></canvas>
+            <button onClick={handleDelete} id="delete-button" className="delete-button"><i className="fas fa-trash-can"></i></button>
+        </div>
     )
 }
