@@ -72,9 +72,7 @@ export default function Whiteboard() {
     function handleZoom(e) {
         e.preventDefault();
 
-        const boards = document.getElementById("board-wrapper");
-
-        const zoomSpeed = 0.1;
+        const zoomSpeed = 0.05;
         const zoomFactor = 1 + (e.deltaY > 0 ? -zoomSpeed : zoomSpeed);
         
         let newScale = currentScale * zoomFactor;
@@ -88,7 +86,7 @@ export default function Whiteboard() {
         }
 
         setCurrentScale(newScale);
-        boards.style.scale = newScale;
+        boardsRef.current.style.scale = newScale;
 
     }
     
@@ -121,6 +119,8 @@ export default function Whiteboard() {
         anim.onfinish = () => {
             boardsRef.current.style.translate = "0 0";
             boardsRef.current.style.scale = "0.5";
+
+            setCurrentScale(0.5);
         }
     }
 
