@@ -8,7 +8,6 @@ main {
 }
 
 #board-wrapper {
-    overflow: hidden;
     padding: 25px;
     display: flex;
     gap: 25px;

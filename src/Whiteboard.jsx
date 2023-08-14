@@ -11,7 +11,7 @@ export default function Whiteboard() {
     const [currentX, setCurrentX] = useState(0);
     const [currentY, setCurrentY] = useState(0);
     const [currentScale, setCurrentScale] = useState(0.5);
-    const [whiteboards, setWhiteboards] = useState([<WhiteboardCanvas key={0}/>]);
+    const [whiteboards, setWhiteboards] = useState([<WhiteboardCanvas key={0} handleDelete={() => handleDeleteBoard(0)}/>]);
     const boardsRef = useRef();
 
     const MIN_ZOOM = 0.25;
@@ -52,13 +52,10 @@ export default function Whiteboard() {
         const deltaX = e.clientX - initialX;
         const deltaY = e.clientY - initialY;
 
-        console.log(deltaX, deltaY);
-        
         boardsRef.current.style.translate = `${currentX + deltaX}px ${currentY + deltaY}px`
     }
 
     function handleMouseUp(e) {
-        if(e.button !== 2) return;
 
         document.body.style.cursor = "default";
 
@@ -127,7 +124,16 @@ export default function Whiteboard() {
     function handleAddBoard() {
         if(whiteboards.length >= MAX_WHITEBOARD_COUNT) return;
         
-        setWhiteboards([...whiteboards, <WhiteboardCanvas key={whiteboards.length}/>])
+        setWhiteboards([...whiteboards, <WhiteboardCanvas key={whiteboards.length} handleDelete={() => {handleDeleteBoard(whiteboards.length)}}/>])
+    }
+
+    function handleDeleteBoard(index) {
+        const updatedBoards = whiteboards.filter((_, i) => i !== index);
+        setWhiteboards(updatedBoards);
+    }
+
+    function renderWhiteboards() {
+        return whiteboards.map((_, index) => <WhiteboardCanvas key={index} handleDelete={() => handleDeleteBoard(index)}/>)
     }
 
     return (
@@ -149,7 +155,7 @@ export default function Whiteboard() {
             </div>
 
             <div id="board-wrapper" ref={boardsRef}>
-                {whiteboards}
+                {renderWhiteboards()}
                 {whiteboards.length < MAX_WHITEBOARD_COUNT ? <button onClick={handleAddBoard} id="add-board" className="add-board"><i className="fas fa-plus"></i></button> : ""}
             </div>
         </main>
