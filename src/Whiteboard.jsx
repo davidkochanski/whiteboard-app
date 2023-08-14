@@ -26,10 +26,6 @@ export default function Whiteboard() {
         setCurrentScale(actualStyle.scale);
     }, [])
 
-    useEffect(() => {
-        boardsRef.current.style.scale = currentScale;
-    }, [currentScale])
-
     function handleMouseDown(e) {
         if(e.button !== 2) return;
 
@@ -40,8 +36,11 @@ export default function Whiteboard() {
         setInitialX(e.clientX);
         setInitialY(e.clientY);
 
-        setCurrentX(boardsRef.current.offsetLeft);
-        setCurrentY(boardsRef.current.offsetTop);
+        const rect = boardsRef.current.getBoundingClientRect();
+
+        setCurrentX((rect.left + (rect.width / 2)) - window.innerWidth / 2);
+        setCurrentY((rect.top + (rect.height / 2)) - window.innerHeight / 2);
+
 
         e.preventDefault();
 
@@ -52,11 +51,10 @@ export default function Whiteboard() {
 
         const deltaX = e.clientX - initialX;
         const deltaY = e.clientY - initialY;
-        
-        boardsRef.current.style.left = `${deltaX + currentX}px`
-        boardsRef.current.style.top = `${deltaY + currentY}px`
 
-        console.log(boardsRef.current.style.left);
+        console.log(deltaX, deltaY);
+        
+        boardsRef.current.style.translate = `${currentX + deltaX}px ${currentY + deltaY}px`
     }
 
     function handleMouseUp(e) {
@@ -96,24 +94,34 @@ export default function Whiteboard() {
     
     function handleZoomOut() {
         const newScale = currentScale * (1 - BUTTON_ZOOM_FACTOR) > MIN_ZOOM ? currentScale * (1 - BUTTON_ZOOM_FACTOR) : MIN_ZOOM;
-        setCurrentScale(newScale);
+
+        let anim = boardsRef.current.animate([{scale: boardsRef.current.style.translate}, {scale: newScale}], {duration: 100, easing: "ease-out"})
+
+        anim.onfinish = () => {
+            setCurrentScale(newScale);
+            boardsRef.current.style.scale = newScale;
+        }
     }
 
     function handleZoomIn() {
         const newScale = currentScale * (1 + BUTTON_ZOOM_FACTOR) < MAX_ZOOM ? currentScale * (1 + BUTTON_ZOOM_FACTOR) : MAX_ZOOM;
-        setCurrentScale(newScale);
+
+        let anim = boardsRef.current.animate([{scale: boardsRef.current.style.translate}, {scale: newScale}], {duration: 100, easing: "ease-out"})
+
+        anim.onfinish = () => {
+            setCurrentScale(newScale);
+            boardsRef.current.style.scale = newScale;
+        }
     }
 
     function handleRecenter() {
-        boardsRef.current.animate([{left: `${boardsRef.current.offsetLeft}px`, top: `${boardsRef.current.offsetTop}px`, scale: currentScale}, {left: "50%", top: "50%", scale: 0.5}], {duration: 250, fill: "forwards"});
+        let anim = boardsRef.current.animate([{translate: boardsRef.current.style.translate, style: boardsRef.current.style.scale}, {translate: "0 0", scale: 0.5}], {duration: 333, easing: "ease-out"});
 
-        setCurrentX(boardsRef.current.offsetLeft);
-        setCurrentY(boardsRef.current.offsetTop);
-        setCurrentScale(0.5);
-
-        boardsRef.current.style.left = `${boardsRef.current.offsetLeft}px`
-        boardsRef.current.style.top = `${boardsRef.current.offsetTop}px`
-
+        // Update the stuff after the fancy animation finishes
+        anim.onfinish = () => {
+            boardsRef.current.style.translate = "0 0";
+            boardsRef.current.style.scale = "0.5";
+        }
     }
 
     function handleAddBoard() {
