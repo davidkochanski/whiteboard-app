@@ -11,13 +11,13 @@ export default function Whiteboard() {
     const [currentX, setCurrentX] = useState(0);
     const [currentY, setCurrentY] = useState(0);
     const [currentScale, setCurrentScale] = useState(0.5);
-    const [whiteboards, setWhiteboards] = useState([<WhiteboardCanvas key={0} handleDelete={() => handleDeleteBoard(0)}/>]);
+    const [whiteboards, setWhiteboards] = useState([<WhiteboardCanvas key={0} handleDelete={handleDeleteBoard}/>]);
     const boardsRef = useRef();
 
     const MIN_ZOOM = 0.25;
     const MAX_ZOOM = 2.0;
     const BUTTON_ZOOM_FACTOR = 0.33;
-    const MAX_WHITEBOARD_COUNT = 3;
+    const MAX_WHITEBOARD_COUNT = 5;
 
     useEffect(() => {
         const boards = document.getElementById("board-wrapper");
@@ -124,16 +124,19 @@ export default function Whiteboard() {
     function handleAddBoard() {
         if(whiteboards.length >= MAX_WHITEBOARD_COUNT) return;
         
-        setWhiteboards([...whiteboards, <WhiteboardCanvas key={whiteboards.length} handleDelete={() => {handleDeleteBoard(whiteboards.length)}}/>])
+        setWhiteboards([...whiteboards, <WhiteboardCanvas idx={whiteboards.length} key={whiteboards.length} handleDelete={handleDeleteBoard}/>])
     }
 
     function handleDeleteBoard(index) {
-        const updatedBoards = whiteboards.filter((_, i) => i !== index);
-        setWhiteboards(updatedBoards);
-    }
+        const newWhiteboards = whiteboards.filter((_, i) => i !== index);
 
+        setWhiteboards(newWhiteboards);
+    }
+    
+    
+    
     function renderWhiteboards() {
-        return whiteboards.map((_, index) => <WhiteboardCanvas key={index} handleDelete={() => handleDeleteBoard(index)}/>)
+        return whiteboards.map((board, index) => <div key={index}>{board}</div>)
     }
 
     return (
