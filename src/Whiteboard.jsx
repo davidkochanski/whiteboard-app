@@ -1,6 +1,6 @@
 import "./Whiteboard.css"
 import WhiteboardCanvas from "./WhiteboardCanvas"
-import { useEffect, useState, useRef } from "react"
+import { useEffect, useState, useRef, cloneElement } from "react"
 
 
 
@@ -133,10 +133,8 @@ export default function Whiteboard() {
         setWhiteboards(newWhiteboards);
     }
     
-    
-    
     function renderWhiteboards() {
-        return whiteboards.map((board, index) => <div key={index}>{board}</div>)
+        return whiteboards.map((board, index) => <div key={index}>{cloneElement(board, {handleDelete: () => handleDeleteBoard(index)})}</div>)
     }
 
     return (
