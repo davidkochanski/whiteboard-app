@@ -74,13 +74,8 @@ export default function Whiteboard() {
         
         let newScale = currentScale * zoomFactor;
 
-        if(newScale <= 0.25) {
-            newScale = 0.25;
-        }
-
-        if(newScale >= 2.0) {
-            newScale = 2.0;
-        }
+        if(newScale <= 0.25) newScale = 0.25;
+        if(newScale >= 2.0) newScale = 2.0;
 
         setCurrentScale(newScale);
         boardsRef.current.style.scale = newScale;
